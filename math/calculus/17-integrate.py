@@ -4,7 +4,7 @@ def poly_integral(poly, C=0):
         return None
     elif type(C) is int:
         if poly == [0]:
-            return C
+            return [C]
         exponent = 0
         integral = poly.copy()
         for i in range (len(integral)):
