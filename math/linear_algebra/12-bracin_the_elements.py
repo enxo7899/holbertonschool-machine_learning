@@ -1,5 +1,6 @@
-#!/usr/bin/env python3
+
 import numpy as np
+
 def np_elementwise(mat1, mat2):
     add = np.add(mat1, mat2)
     sub = np.subtract(mat1, mat2)
