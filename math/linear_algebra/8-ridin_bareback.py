@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
+"""Riding Bareback"""
+
+
 def mat_mul(mat1, mat2):
+    """Function to perform matrix multiplications"""
     if len(mat1[0]) != len(mat2):
         return None
     result = [[0 for _ in range(len(mat2[0]))] for _ in range(len(mat1))]
