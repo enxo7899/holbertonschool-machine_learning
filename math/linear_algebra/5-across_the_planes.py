@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 def add_matrices2D(mat1, mat2):
+    """ A function to add matrices"""
     mat = []
     if len(mat1[0]) != len(mat2[0]) or len(mat1) != len(mat2):
         return None
