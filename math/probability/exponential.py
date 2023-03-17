@@ -23,24 +23,24 @@ class Exponential:
             lambtha = float(len(data) / sum(data))
             self.lambtha = lambtha
 
-            def pdf(self, x):
-                """
+    def pdf(self, x):
+        """
         calculates the value of the PDF for a given time period
         """
-                if x < 0:
-                    return 0
-                e = 2.7182818285
-                lambtha = self.lambtha
-                pdf = lambtha * (e ** (-lambtha * x))
-                return pdf
+        if x < 0:
+            return 0
+        e = 2.7182818285
+        lambtha = self.lambtha
+        pdf = lambtha * (e ** (-lambtha * x))
+        return pdf
 
-            def cdf(self, x):
-                """
+    def cdf(self, x):
+        """
         calculates the value of the CDF for a given time period
         """
-                if x < 0:
-                    return 0
-                e = 2.7182818285
-                lambtha = self.lambtha
-                cdf = 1 - (e ** (-lambtha * x))
-                return cdf
+        if x < 0:
+            return 0
+        e = 2.7182818285
+        lambtha = self.lambtha
+        cdf = 1 - (e ** (-lambtha * x))
+        return cdf
