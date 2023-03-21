@@ -6,7 +6,7 @@ import numpy as np
 
 def convolve(images, kernels, padding='same', stride=(1, 1)):
     """
-    A function to convlovle rbg images 
+    A function to convlovle rbg images
     """
     m, h, w, c = images.shape
     kh, kw, c, nc = kernels.shape
@@ -24,5 +24,7 @@ def convolve(images, kernels, padding='same', stride=(1, 1)):
     output = np.zeros((m, oh, ow, nc))
     for i in range(oh):
         for j in range(ow):
-            output[:, i, j, :] = np.sum(images[:, i*sh:i*sh+kh, j*sw:j*sw+kw, :, np.newaxis] * kernels, axis=(1, 2, 3))
+            output[:, i, j, :] = np.sum(images[:, i*sh:i*sh+kh,
+                                               j*sw:j*sw+kw, :, np.newaxis] *
+                                        kernels, axis=(1, 2, 3))
     return output
