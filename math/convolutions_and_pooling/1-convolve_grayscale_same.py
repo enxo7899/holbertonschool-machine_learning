@@ -8,22 +8,14 @@ def convolve_grayscale_same(images, kernel):
     Performs a valid convolution on grayscale images
     """
 
-    m, height, width = images.shape
+
+m, h, w = images.shape
     kh, kw = kernel.shape
-
-    if (kh % 2) == 1 and (kw % 2) == 1:
-        ph = (kh - 1) // 2
-        pw = (kw - 1) // 2
-    else:
-        ph = kh // 2
-        ph = kw // 2
-
-
-        images: np.pad(images, ((0, 0), (ph, ph), (pw, pw)), 'constant', consta        nt_values=0)
-        convoluted = np.zeros((m, height, width))
-
-    for h in range(height):
-        for w in range(width):
-            output = np.sum(images[:, h: h + kh, w: w + kw] * kernel, axis = 1)            .sum(axis = 1)
-            convoluted[:, h, w] = output
-    return convoluted
+    ph = max(kh - 1, 0)
+    pw = max(kw - 1, 0)
+    padded_images = np.pad(images, pad_width=((0, 0), (ph, ph), (pw, pw)),                         mode='constant', constant_values=0)
+    output = np.zeros((m, h, w))
+    for i in range(h):
+        for j in range(w):
+            output[:, i, j] = np.sum(padded_images[:, i:i+kh, j:j+kw] * kernel,                              axis=(1,2))
+    return output
