@@ -1,12 +1,14 @@
-import numpy as np
 #!/usr/bin/env python3
 """Performs a valid convolution on grayscale images"""
 
 
+import numpy as np
 def convolve_grayscale_padding(images, kernel, padding):
     """
     Performs a valid convolution on grayscale images
     """
+
+    
     m, height, width = images.shape
     kh, kw = kernel.shape
     ph, pw = padding
