@@ -9,21 +9,27 @@ def convolve_channels(images, kernel, padding='same', stride=(1, 1)):
     """
     Function for RBG images
     """
-    m, h, w, c = images.shape
-    kh, kw, _ = kernel.shape
+    m, height, width, c = images.shape
+    kh, kw, kc = kernel.shape
     sh, sw = stride
-    if padding == 'valid':
-        ph, pw = 0, 0
-    elif padding == 'same':
-        ph = ((h - 1) * sh + kh - h) // 2 + 1
-        pw = ((w - 1) * sw + kw - w) // 2 + 1
+    if padding == 'same':
+        ph = ((height - 1) * sh + kh - height) // 2 + 1
+        pw = ((width - 1) * sw + kw - width) // 2 + 1
+    elif padding == 'valid':
+        ph = 0
+        pw = 0
     else:
         ph, pw = padding
-    images_padded = np.pad(images, ((0, 0), (ph, ph), (pw, pw), (0, 0)), 'constant')
-    conv_h = (h - kh + 2 * ph) // sh + 1
-    conv_w = (w - kw + 2 * pw) // sw + 1
-    output = np.zeros((m, conv_h, conv_w))
-    for i in range(conv_h):
-        for j in range(conv_w):
-            output[:, i, j] = np.sum(images_padded[:, i*sh:i*sh+kh, j*sw:j*sw+kw] * kernel, axis=(1, 2))
-    return output
+    images = np.pad(images, ((0,0), (ph, ph), (pw, pw), (0, 0)), 'constant', constant_values=0)
+    ch = ((height + (2*ph) - kh) // sh) + 1
+    cw = ((width + (2*pw) - kw ) // sw) + 1
+    convoluted = np.zeros((m, ch, cw))
+    i = 0
+    for h in range(0, height + (2*ph) - kh + 1, sh):
+        j = 0
+        for w in range(0, width + (2*pw) - kw + 1, sw):
+            output = np.sum(images[:, h: h + kh, w: w + kw, :] * kernel, axis = 1).sum(axis = 1).sum(axis = 1)
+            convoluted[:, i, j] = output
+            j += 1
+        i += 1
+    return convoluted
