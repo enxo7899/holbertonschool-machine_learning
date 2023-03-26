@@ -18,6 +18,7 @@ class MultiNormal:
             raise ValueError("data must contain multiple data points")
         self.mean = np.mean(data, axis=1, keepdims=True)
         self.cov = np.dot(data-self.mean, (data-self.mean).T)/(data.shape[1]-1)
+
     def pdf(self, x):
         """
         A function for pdf
@@ -29,6 +30,7 @@ class MultiNormal:
         self.mean = np.mean(data, axis=1, keepdims=True)
         X = data - self.mean
         self.cov = np.matmul(X, X.T) / (data.shape[1] - 1)
+
     def pdf(self, x):
         """
         Calculates the PDF at a data point
@@ -40,7 +42,8 @@ class MultiNormal:
             raise ValueError("x must have the shape ({}, 1)".format(d))
         det = np.linalg.det(self.cov)
         inv = np.linalg.inv(self.cov)
-        norm_const = 1.0 / (np.power((2 * np.pi), float(d) / 2) * np.power(det, 1.0 / 2))
+        norm_const = 1.0 / (np.power((2 * np.pi),
+                                     float(d) / 2) * np.power(det, 1.0 / 2))
         x_mu = x - self.mean
         result = np.exp(-0.5 * np.matmul(np.matmul(x_mu.T, inv), x_mu))
         return norm_const * result.item()
