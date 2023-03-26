@@ -5,6 +5,9 @@ import numpy as np
 
 
 class MultiNormal:
+    """
+    MultiNormal Class
+    """
     def __init__(self, data):
         """
         A function for multi normal
@@ -15,4 +18,3 @@ class MultiNormal:
             raise ValueError("data must contain multiple data points")
         self.mean = np.mean(data, axis=1, keepdims=True)
         self.cov = np.dot(data-self.mean, (data-self.mean).T)/(data.shape[1]-1)
-                                                                    
