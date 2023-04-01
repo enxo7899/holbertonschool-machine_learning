@@ -9,7 +9,7 @@ def pool(images, kernel_shape, stride, mode='max'):
     """
     Function to pool images
     """
-    m, h, w, c = images.shape
+    m, height, width, c = images.shape
     kh, kw = kernel_shape
     sh, sw = stride
     ph = ((height - kh) // sh) + 1
@@ -20,14 +20,12 @@ def pool(images, kernel_shape, stride, mode='max'):
         j = 0
         for w in range(0, (width - kw + 1), sw):
             if mode == 'max':
-                output = np.max(images[:, h:h + kh, w:w + kw, :],
-                                axis=(1, 2))
+                output = np.max(images[:, h:h + kh, w:w + kw, :], axis=(1, 2))
             elif mode == 'avg':
-                output = np.average(images[: , h:h + kh, w:w + kw, :],
-                                    axis=(1, 2))
+                output = np.average(images[: , h:h + kh, w:w + kw, :], axis=(1, 2))
             else:
                 pass
             pooled[:, i, j, :] = output
             j += 1
         i += 1
-    return pooled 
+    return pooled
