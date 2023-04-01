@@ -2,6 +2,9 @@
 """ Performs a function that calculates the posterior propability"""
 
 
+import nunmpy as np
+
+
 def posterior(x, n, P, Pr):
     """
     Calculates the posterior probability for the
