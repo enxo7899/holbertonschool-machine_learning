@@ -2,6 +2,9 @@
 """ Performs a function that calculates the posterior propability"""
 
 
+import numpy as np
+
+
 def marginal(x, n, P, Pr):
     """
     Calculates the marginal probability of obtaining the data
