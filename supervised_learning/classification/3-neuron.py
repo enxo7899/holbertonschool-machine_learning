@@ -8,8 +8,6 @@ class Neuron:
     """
     class that represents a single neuron performing binary classificat
     """
-
-
     # TASK 1
     def __init__(self, nx):
         if type(nx) is not int:
