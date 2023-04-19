@@ -28,6 +28,7 @@ class NeuralNetwork:
     # matches the shape of the hidden layer output
     self.b1 = np.zeros((nodes, 1))
     self.A1 = 0
+
     # only one node and receives the output from the hidden layer as input
     self.W2 = np.random.randn(1, nodes)
     # matching the shape of the output neuron's activation
