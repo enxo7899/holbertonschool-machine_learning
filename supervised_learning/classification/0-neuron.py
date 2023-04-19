@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+import matplotlib.pyplot as plt
+import numpy as np
 class Neuron:
     """
     class that represents a single neuron performing binary classification
