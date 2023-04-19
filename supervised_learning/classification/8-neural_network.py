@@ -11,9 +11,9 @@ class NeuralNetwork:
     """
 
     def __init__(self, nx, nodes):
-    """
-    class constructor
-    """
+        """
+        class constructor
+        """
         if type(nx) is not int:
             raise TypeError("nx must be an integer")
         if nx < 1:
