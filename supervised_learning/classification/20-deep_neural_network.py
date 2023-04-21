@@ -36,7 +36,7 @@ class DeepNeuralNetwork:
                 (np.random.randn(layer, previous) * np.sqrt(2 / previous))
             )
             previous = layer
-    
+
         self.__L = len(layers)
         self.__cache = {}
         self.__weights = weights
