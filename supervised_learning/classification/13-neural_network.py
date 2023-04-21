@@ -95,7 +95,7 @@ class NeuralNetwork:
         m = Y.shape[1]
 
         # the error or loss at the output layer (dz2)
-        # by taking the difference between 
+        # by taking the difference between
         # the predicted output A2 and the actual labels Y
         dz2 = (A2 - Y)
 
@@ -103,21 +103,22 @@ class NeuralNetwork:
         # using the error dz2 and the output of the hidden layer A1.
         """
         The derivative of the cost with respect to the
-        weights of the output layer 
-        is the product of the derivative of the cost 
-        with respect to the activations of the output layer (dz2) 
-        and the derivative of the activations 
-        of the output layer with respect to the weights of the 
+        weights of the output layer
+        is the product of the derivative of the cost
+        with respect to the activations of the output layer (dz2)
+        and the derivative of the activations
+        of the output layer with respect to the weights of the
         output layer (A1.transpose()).
         """
         d__W2 = (1 / m) * (np.matmul(dz2, A1.transpose()))
         # similarly, by taking the average of the errors over all examples.
         d__b2 = (1 / m) * (np.sum(dz2, axis=1, keepdims=True))
 
-        # the error or loss at the hidden layer (dz1) by taking the dot product of W2 and dz2
+        # the error or loss at the hidden layer 
+        #(dz1) by taking the dot product of W2 and dz2
         # and element-wise multiplication of the result with A1 and (1 - A1).
         dz1 = (np.matmul(self.W2.transpose(), dz2)) * (A1 * (1 - A1))
-        #  the gradient of the cost with respect to W1 (d__W1) 
+        #  the gradient of the cost with respect to W1 (d__W1)
         # using the error dz1 and the input data X.
         d__W1 = (1 / m) * (np.matmul(dz1, X.transpose()))
         d__b1 = (1 / m) * (np.sum(dz1, axis=1, keepdims=True))
