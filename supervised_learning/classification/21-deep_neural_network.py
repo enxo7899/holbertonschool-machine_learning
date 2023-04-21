@@ -22,17 +22,18 @@ class DeepNeuralNetwork:
             raise ValueError("nx must be a positive integer")
         if type(layers) is not list or len(layers) < 1:
             raise TypeError("layers must be a list of positive integers")
-  
+
         weights = {}
         previous = nx
 
         for index, layer in enumerate(layers, 1):
-   
             if type(layer) is not int or layer < 0:
                 raise TypeError("layers must be a list of positive integers")
     
             weights["b{}".format(index)] = np.zeros((layer, 1))
-            weights["W{}".format(index)] = (np.random.randn(layer, previous) * np.sqrt(2 / previous))
+            weights["W{}".format(index)] = (
+                (np.random.randn(layer, previous) * np.sqrt(2 / previous))
+            )
             previous = layer
     
         self.__L = len(layers)
@@ -101,21 +102,25 @@ class DeepNeuralNetwork:
 
             # checks if the current layer is the output layer
             if index == self.L:
-                # the derivative of the cost with respect to the output activations A 
+                # the derivative of the cost with 
+                # respect to the output activations A 
                 # is computed as A - Y
                 back["dz{}".format(index)] = (cache["A{}".format(index)] - Y)
             else:
                 # compute derivative w.r.t the activations of the previous layer
-                # retrieve  derivative w.r.t the activations of the current layer+1
+                # retrieve  derivative w.r.t the
+                # activations of the current layer+1
                 dz_prev = back["dz{}".format(index + 1)] 
                 # retrieve the activations of the current layer
                 A_current = cache["A{}".format(index)]
-                # compute the derivative of the cost with respect to the activations
+                # compute the derivative of the cost with
+                # respect to the activations
                 back["dz{}".format(index)] = (
                     np.matmul(W_prev.transpose(), dz_prev) *
                     (A_current * (1 - A_current)))
  
-            # compute the gradients of the weights and biases of a layer during backpropagation
+            # compute the gradients of the weights and biases
+            # of a layer during backpropagation
             # dz is the error of the current layer
             dz = back["dz{}".format(index)]
             # dW is the gradient of the weights
