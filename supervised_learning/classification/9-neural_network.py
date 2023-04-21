@@ -2,6 +2,9 @@
 """Perform binary classification"""
 
 
+import numpy as np
+
+
 class NeuralNetwork:
     """
     class that represents a neural network with one hidden layer
