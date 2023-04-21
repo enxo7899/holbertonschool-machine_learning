@@ -5,8 +5,6 @@
 import numpy as np
 
 
-import numpy as np
-
 class DeepNeuralNetwork:
     """
     class that represents a deep neural network
