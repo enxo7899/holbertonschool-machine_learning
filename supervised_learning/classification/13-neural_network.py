@@ -114,8 +114,8 @@ class NeuralNetwork:
         # similarly, by taking the average of the errors over all examples.
         d__b2 = (1 / m) * (np.sum(dz2, axis=1, keepdims=True))
 
-        # the error or loss at the hidden layer 
-        #(dz1) by taking the dot product of W2 and dz2
+        # the error or loss at the hidden layer
+        # (dz1) by taking the dot product of W2 and dz2
         # and element-wise multiplication of the result with A1 and (1 - A1).
         dz1 = (np.matmul(self.W2.transpose(), dz2)) * (A1 * (1 - A1))
         #  the gradient of the cost with respect to W1 (d__W1)
