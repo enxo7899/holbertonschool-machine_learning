@@ -52,6 +52,9 @@ class DeepNeuralNetwork:
         return (self.__weights)
 
     def forward_prop(self, X):
+        """
+        forward prop function
+        """
 
         self.__cache["A0"] = X
 
