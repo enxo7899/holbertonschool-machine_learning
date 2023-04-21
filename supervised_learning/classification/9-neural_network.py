@@ -1,3 +1,7 @@
+#!/usr/bin/env python3
+"""Perform binary classification"""
+
+
 class NeuralNetwork:
     """
     class that represents a neural network with one hidden layer
