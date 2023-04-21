@@ -12,6 +12,9 @@ class DeepNeuralNetwork:
     """
 
     def __init__(self, nx, layers):
+        """
+        init function
+        """
 
         if type(nx) is not int:
             raise TypeError("nx must be an integer")
@@ -49,6 +52,9 @@ class DeepNeuralNetwork:
         return (self.__weights)
     
     def forward_prop(self, X):
+        """
+        forward function
+        """
         
         self.__cache["A0"] = X
         
@@ -64,6 +70,9 @@ class DeepNeuralNetwork:
         return (A, self.cache)
     
     def cost(self, Y, A):
+        """
+        cost function
+        """
         m = Y.shape[1]
         m_loss = np.sum((Y * np.log(A)) + ((1 - Y) * np.log(1.0000001 - A)))
         cost = (1 / m) * (-(m_loss))
