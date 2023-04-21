@@ -29,13 +29,13 @@ class DeepNeuralNetwork:
         for index, layer in enumerate(layers, 1):
             if type(layer) is not int or layer < 0:
                 raise TypeError("layers must be a list of positive integers")
-    
+
             weights["b{}".format(index)] = np.zeros((layer, 1))
             weights["W{}".format(index)] = (
                 (np.random.randn(layer, previous) * np.sqrt(2 / previous))
             )
             previous = layer
-    
+
         self.__L = len(layers)
         self.__cache = {}
         self.__weights = weights
@@ -62,12 +62,12 @@ class DeepNeuralNetwork:
         for index in range(self.L):
             W = self.weights["W{}".format(index + 1)]
             b = self.weights["b{}".format(index + 1)]
-  
+
             z = np.matmul(W, self.cache["A{}".format(index)]) + b
             A = 1 / (1 + (np.exp(-z)))
-   
+
             self.__cache["A{}".format(index + 1)] = A
-       
+
         return (A, self.cache)
 
     def cost(self, Y, A):
@@ -102,15 +102,16 @@ class DeepNeuralNetwork:
 
             # checks if the current layer is the output layer
             if index == self.L:
-                # the derivative of the cost with 
-                # respect to the output activations A 
+                # the derivative of the cost with
+                # respect to the output activations A
                 # is computed as A - Y
                 back["dz{}".format(index)] = (cache["A{}".format(index)] - Y)
             else:
-                # compute derivative w.r.t the activations of the previous layer
+                # compute derivative w.r.t the activations
+                # of the previous layer
                 # retrieve  derivative w.r.t the
                 # activations of the current layer+1
-                dz_prev = back["dz{}".format(index + 1)] 
+                dz_prev = back["dz{}".format(index + 1)]
                 # retrieve the activations of the current layer
                 A_current = cache["A{}".format(index)]
                 # compute the derivative of the cost with
@@ -118,7 +119,7 @@ class DeepNeuralNetwork:
                 back["dz{}".format(index)] = (
                     np.matmul(W_prev.transpose(), dz_prev) *
                     (A_current * (1 - A_current)))
- 
+
             # compute the gradients of the weights and biases
             # of a layer during backpropagation
             # dz is the error of the current layer
@@ -128,7 +129,6 @@ class DeepNeuralNetwork:
             # db is the gradient of the biases, along the m axis
             db = (1 / m) * np.sum(dz, axis=1, keepdims=True)
 
- 
             W_prev = self.weights["W{}".format(index)]
 
             self.__weights["W{}".format(index)] = (
