@@ -30,7 +30,7 @@ class DeepNeuralNetwork:
 
             weights["b{}".format(index)] = np.zeros((layer, 1))
             weights["W{}".format(index)] = (
-                (np.random.randn(layer, previous) 
+                (np.random.randn(layer, previous)
                  * np.sqrt(2 / previous))
             )
             previous = layer
