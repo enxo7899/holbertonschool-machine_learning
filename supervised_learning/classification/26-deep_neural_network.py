@@ -102,3 +102,19 @@ class DeepNeuralNetwork:
             W_prev = self.weights["W{}".format(index+1)]
             self.weights["W{}".format(index)] -= alpha * dW
             self.weights["b{}".format(index)] -= alpha * db
+     
+    
+    def get_max_profit(prices):
+        if len(prices) < 2:
+            raise ValueError("Getting a profit requires at least 2 prices")
+
+        min_price = prices[0]
+        max_profit = prices[1] - prices[0]
+
+        for i in range(1, len(prices)):
+            current_price = prices[i]
+            potential_profit = current_price - min_price
+            max_profit = max(max_profit, potential_profit)
+            min_price = min(min_price, current_price)
+
+        return max_profit
