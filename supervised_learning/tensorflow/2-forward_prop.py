@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Defines a function that creates the forward 
+Defines a function that creates the forward
 propagation graph for the neural network
 """
 
