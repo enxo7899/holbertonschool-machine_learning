@@ -2,7 +2,7 @@
 """Perform optimization"""
 
 
-import tensorflow as tf
+import numpy as np
 
 
 def batch_norm(Z, gamma, beta, epsilon):
