@@ -2,7 +2,7 @@
 """Perform optimization"""
 
 
-import numpy as np
+import tensorflow as tf
 
 
 def create_batch_norm_layer(prev, n, activation):
