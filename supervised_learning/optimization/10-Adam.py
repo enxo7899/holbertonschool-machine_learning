@@ -2,7 +2,7 @@
 """Perform optimization"""
 
 
-import numpy as np
+import tensorflow as tf
 
 
 def create_Adam_op(loss, alpha, beta1, beta2, epsilon):
