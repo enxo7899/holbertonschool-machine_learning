@@ -2,9 +2,6 @@
 """Perform optimization"""
 
 
-import numpy as np
-
-
 import tensorflow as tf
 
 
