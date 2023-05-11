@@ -1,4 +1,4 @@
-A,E - Train more and Use regularization
-B,E - Try a different architecture and Use regularization
-C,D - Get more data and Build a deeper network
-F - Nothing (Low bias and low variance suggests a good model fit)
+A,E
+B,E
+C,D
+F
