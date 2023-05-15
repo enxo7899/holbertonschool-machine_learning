@@ -6,6 +6,7 @@ import numpy as np
 
 
 def l2_reg_gradient_descent(Y, weights, cache, alpha, lambtha, L):
+    """function for gradiet descent"""
     m = Y.shape[1]
     dZ = cache["A" + str(L)] - Y
     for l in reversed(range(1, L + 1)):
