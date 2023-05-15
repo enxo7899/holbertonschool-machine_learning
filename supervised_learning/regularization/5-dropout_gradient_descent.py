@@ -3,44 +3,20 @@
 
 
 import numpy as np
-
+import tensorflow as tf
 
 def dropout_gradient_descent(Y, weights, cache, alpha, keep_prob, L):
-
-    m = Y.shape[1]
-    back = {}
-    
-    for index in range(L, 0, -1):
-        A = cache["A{}".format(index - 1)]
-        if index == L:
-            # if last layer, calculate dz value as A - Y
-            back["dz{}".format(index)] = (cache["A{}".format(index)] - Y)
-            dz = back["dz{}".format(index)]
-
-        else:
-            # retreive previous dz and current activation
-            dz_prev = back["dz{}".format(index + 1)]
-            A_current = cache["A{}".format(index)]
-            
-            # calculate current dz
-            back["dz{}".format(index)] = (
-                np.matmul(W_prev.transpose(), dz_prev) *
-                (A_current * (1 - A_current)))
-            
-            # multiply by dropout mask and divide by keep probability
-            dz = back["dz{}".format(index)]
-            dz *= cache["D{}".format(index)]
-            dz /= keep_prob
-
-        # calculate weights and bias
-        dW = (1 / m) * (np.matmul(dz, A.transpose()))
-        db = (1 / m) * np.sum(dz, axis=1, keepdims=True)
-        
-        # store for next interation
-        W_prev = weights["W{}".format(index)]
-        
-        # modify weights and bias
-        weights["W{}".format(index)] = (
-            weights["W{}".format(index)] - (alpha * dW))
-        weights["b{}".format(index)] = (
-            weights["b{}".format(index)] - (alpha * db))
+    m = Y.shape[1]    
+    dZ = cache['A' + str(L)] - Y
+    dW = (1 / m) * tf.matmul(dZ, tf.transpose(cache['A' + str(L - 1)]))
+    db = (1 / m) * tf.reduce_sum(dZ, axis=1, keepdims=True)
+    weights['W' + str(L)] -= alpha * dW
+    weights['b' + str(L)] -= alpha * db  
+    for i in range(L - 1, 0, -1):
+        dA = tf.matmul(tf.transpose(weights['W' + str(i + 1)]), dZ)
+        dA *= cache['D' + str(i)] / keep_prob
+        dZ = dA * (1 - tf.square(tf.tanh(cache['A' + str(i)])))
+        dW = (1 / m) * tf.matmul(dZ, tf.transpose(cache['A' + str(i - 1)]))
+        db = (1 / m) * tf.reduce_sum(dZ, axis=1, keepdims=True)
+        weights['W' + str(i)] -= alpha * dW
+        weights['b' + str(i)] -= alpha * db
