@@ -2,6 +2,9 @@
 """Function l2"""
 
 
+import numpy as np
+
+
 def dropout_create_layer(prev, n, activation, keep_prob):
     """Def dropout"""
     dropout = tf.layers.Dropout(keep_prob)
