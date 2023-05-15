@@ -5,8 +5,6 @@
 import numpy as np
 
 
-import numpy as np
-
 def dropout_gradient_descent(Y, weights, cache, alpha, keep_prob, L):
 
     m = Y.shape[1]
