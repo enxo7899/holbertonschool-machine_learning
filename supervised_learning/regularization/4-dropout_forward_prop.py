@@ -4,6 +4,7 @@
 
 import numpy as np
 
+
 def dropout_forward_prop(X, weights, L, keep_prob):
     """Droupout function"""
     outputs = {}
@@ -14,9 +15,9 @@ def dropout_forward_prop(X, weights, L, keep_prob):
         z = np.matmul(weight, outputs["A{}".format(index)]) + bias
         dropout = np.random.binomial(1, keep_prob, size=z.shape)
         if index != (L - 1):
-            A = np.tanh(z) # apply tahn activation
-            A *= dropout   # apply dropout mask
-            A /= keep_prob # ensure expected values do not change during training
+            A = np.tanh(z)
+            A *= dropout
+            A /= keep_prob
             outputs["D{}".format(index + 1)] = dropout
         else:
             A = np.exp(z)  # apply softmax
