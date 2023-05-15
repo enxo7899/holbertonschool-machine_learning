@@ -3,24 +3,27 @@
 
 
 import numpy as np
-
+import tensorflow as tf
 
 def dropout_forward_prop(X, weights, L, keep_prob):
-    """Droupout function"""
-    outputs = {}
-    outputs["A0"] = X
-    for index in range(L):
-        weight = weights["W{}".format(index + 1)]
-        bias = weights["b{}".format(index + 1)]
-        z = np.matmul(weight, outputs["A{}".format(index)]) + bias
-        dropout = np.random.binomial(1, keep_prob, size=z.shape)
-        if index != (L - 1):
-            A = np.tanh(z)
-            A *= dropout
+    cache = {'A0': X}
+    dropout_masks = {}
+    
+    for i in range(1, L + 1):
+        A_prev = cache[f'A{i - 1}']
+        W = weights[f'W{i}']
+        b = weights[f'b{i}']
+        
+        Z = tf.matmul(W, A_prev) + b
+        if i != L:
+            A = tf.nn.tanh(Z)
+            D = tf.random_uniform(tf.shape(A), minval=0, maxval=1) < keep_prob
+            A = tf.multiply(A, tf.cast(D, dtype=tf.float32))
             A /= keep_prob
-            outputs["D{}".format(index + 1)] = dropout
+            dropout_masks[f'D{i}'] = D
         else:
-            A = np.exp(z)  # apply softmax
-            A /= np.sum(A, axis=0, keepdims=True)
-        outputs["A{}".format(index + 1)] = A
-    return outputs
+            A = tf.nn.softmax(Z)
+        
+        cache[f'A{i}'] = A
+    
+    return {**cache, **dropout_masks}
