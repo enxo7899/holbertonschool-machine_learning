@@ -5,9 +5,9 @@
 import numpy as np
 
 
-def l2_reg_gradient_descent(Y,weights, cache, alpha, lambtha, L):
-   m = Y.shape[1]
-    dZ = cache["A" + str(L)] - Y 
+def l2_reg_gradient_descent(Y, weights, cache, alpha, lambtha, L):
+    m = Y.shape[1]
+    dZ = cache["A" + str(L)] - Y
     for l in reversed(range(1, L + 1)):
         A_prev = cache["A" + str(l - 1)]
         W = weights["W" + str(l)]
