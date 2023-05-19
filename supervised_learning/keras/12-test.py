@@ -8,9 +8,9 @@ using Keras library
 import tensorflow.keras as K
 
 
-def test_model(network, data, labels, verbose=True):
-    """function to test model"""
-    loss, accuracy = network.evaluate(x=data,
-                                      y=labels,
-                                      verbose=verbose)
-    return loss, accuracy
+def predict(network, data, verbose=False):
+    """Make predictions using the network model"""
+    predictions = network.predict(data)
+    if verbose:
+        print(predictions)
+    return predictions
