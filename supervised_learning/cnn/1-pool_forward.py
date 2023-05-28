@@ -10,11 +10,9 @@ def pool_forward(A_prev, kernel_shape, stride=(1, 1), mode='max'):
     m, h_prev, w_prev, c_prev = A_prev.shape
     kh, kw = kernel_shape
     sh, sw = stride
-    
     ph = ((h_prev - kh) // sh) + 1
     pw = ((w_prev - kw) // sw) + 1
     pooled = np.zeros((m, ph, pw, c_prev))
-    
     i = 0
     for h in range(0, (h_prev - kh + 1), sh):
         j = 0
