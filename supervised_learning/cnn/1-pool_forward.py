@@ -28,5 +28,4 @@ def pool_forward(A_prev, kernel_shape, stride=(1, 1), mode='max'):
             pooled[:, i, j, :] = output
             j += 1
         i += 1
-        
     return pooled
