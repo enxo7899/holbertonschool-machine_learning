@@ -9,7 +9,7 @@ def conv_forward(A_prev, W, b, activation, padding="same", stride=(1, 1)):
     """function to comv forward"""
     m, h_prev, w_prev, c_prev = A_prev.shape
     kh, kw, c_prev, c_new = W.shape
-    sh, sw = stride    
+    sh, sw = stride
     if padding == 'valid':
         ph = 0
         pw = 0
