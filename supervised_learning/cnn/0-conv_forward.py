@@ -9,8 +9,7 @@ def conv_forward(A_prev, W, b, activation, padding="same", stride=(1, 1)):
     """function to comv forward"""
     m, h_prev, w_prev, c_prev = A_prev.shape
     kh, kw, c_prev, c_new = W.shape
-    sh, sw = stride
-    
+    sh, sw = stride    
     if padding == 'valid':
         ph = 0
         pw = 0
@@ -19,14 +18,11 @@ def conv_forward(A_prev, W, b, activation, padding="same", stride=(1, 1)):
         pw = (((w_prev - 1) * sw) + kw - w_prev) // 2
     else:
         return
-    
     images = np.pad(A_prev, ((0, 0), (ph, ph), (pw, pw), (0, 0)),
                     'constant', constant_values=0)
-    
     ch = (h_prev + (2 * ph) - kh) // sh + 1
     cw = (w_prev + (2 * pw) - kw) // sw + 1
     convoluted = np.zeros((m, ch, cw, c_new))
-    
     for index in range(c_new):
         kernel_index = W[:, :, :, index]
         i = 0
@@ -40,5 +36,4 @@ def conv_forward(A_prev, W, b, activation, padding="same", stride=(1, 1)):
                 convoluted[:, i, j, index] = activation(output)
                 j += 1
             i += 1
-            
     return convoluted
