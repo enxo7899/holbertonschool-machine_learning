@@ -6,12 +6,13 @@ using Keras model
 
 
 import tensorflow.keras as K
-inception_block = inception_block 
+inception_block = inception_block
 
 
 def inception_network():
     """
     Builds an inception network using Keras model
+
     """
     
     init = K.initializers.he_normal()
