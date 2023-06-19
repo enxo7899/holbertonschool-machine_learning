@@ -6,7 +6,7 @@ using Keras model
 
 
 import tensorflow.keras as K
-inception_network = __import__('1-inception_network').inception_network
+inception_network = __import__('0-inception_network').inception_network
 
 
 def inception_network():
