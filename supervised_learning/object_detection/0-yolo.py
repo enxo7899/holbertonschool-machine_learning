@@ -4,6 +4,9 @@ from tensorflow.keras.models import load_model
 
 
 class Yolo:
+    """
+    Documentation for class YOLO usage
+    """
 
     def __init__(self, model_path, classes_path, class_t, nms_t, anchors):
         self.model = load_model(model_path)
