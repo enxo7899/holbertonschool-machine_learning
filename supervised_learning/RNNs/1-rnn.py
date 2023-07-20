@@ -16,7 +16,7 @@ def rnn(rnn_cell, X, h_0):
 
     """
     initializes a matrix H with zeros
-    t + 1: time steps plus a row for the initial hidden state. 
+    t + 1: time steps plus a row for the initial hidden state.
     m: columns, i.e., number of samples,
     h: depth, i.e., the hidden state dimension.
     """
@@ -36,8 +36,8 @@ def rnn(rnn_cell, X, h_0):
             Y = np.concatenate((Y, y))
 
     """
-    the output matrix is organized based on the dimensions of time steps and samples
-    allowing for easier interpretation and further processing of the RNN outputs.
+    the output matrix is organized based on the dimensions of time
+    allowing for easier interpretation and further processing of
     determines the size of the last dimension of the matrix Y
     representing the shape of the output at each time step.
     """
