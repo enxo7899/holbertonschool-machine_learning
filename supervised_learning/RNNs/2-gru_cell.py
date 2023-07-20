@@ -76,7 +76,7 @@ class GRUCell:
         """
         concatenation2 = np.concatenate((r_gate * h_prev, x_t), axis=1)
         h_next = np.tanh(np.matmul(concatenation2, self.Wh) + self.bh)
-        # element-wise multiplication between the intermediate hidden state h_next 
+        # element-wise multiplication between
         # and the update gate z_gate;
         h_next *= z_gate
         #  the complement of the update gate, how much info to discard
