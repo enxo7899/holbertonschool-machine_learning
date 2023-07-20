@@ -21,12 +21,12 @@ class GRUCell:
 
         """
         The first dimension, h + i, determines the total number of input
-        units to the update gate. 
+        units to the update gate.
         This includes the hidden state dimension
-        (h) and the input dimension (i). 
+        (h) and the input dimension (i).
 
         The input dimension i represents the size
-        of the input at each time step, 
+        of the input at each time step,
         while the hidden state dimension h represents the
         size of the previous hidden state.
         """
@@ -43,7 +43,6 @@ class GRUCell:
     def softmax(self, x):
         """
         Performs the softmax function
-
         """
         e_x = np.exp(x - np.max(x, axis=1, keepdims=True))
         softmax = e_x / e_x.sum(axis=1, keepdims=True)
@@ -72,8 +71,8 @@ class GRUCell:
         r_gate = self.sigmoid(np.matmul(concatenation1, self.Wr) + self.br)
 
         """
-        perform the computation of the next hidden state 
-        based on the reset gate, the previous hidden state, 
+        perform the computation of the next hidden state
+        based on the reset gate, the previous hidden state,
         the current input, and the update gate.
         """
         concatenation2 = np.concatenate((r_gate * h_prev, x_t), axis=1)
