@@ -20,11 +20,15 @@ class GRUCell:
         self.br = np.zeros((1, h))
 
         """
-        The first dimension, h + i, determines the total number of input units to the update gate. 
-        This includes the hidden state dimension (h) and the input dimension (i). 
+        The first dimension, h + i, determines the total number of input
+        units to the update gate. 
+        This includes the hidden state dimension
+        (h) and the input dimension (i). 
 
-        The input dimension i represents the size of the input at each time step, 
-        while the hidden state dimension h represents the size of the previous hidden state.
+        The input dimension i represents the size
+        of the input at each time step, 
+        while the hidden state dimension h represents the
+        size of the previous hidden state.
         """
         self.Wz = np.random.normal(size=(h + i, h))
         self.Wr = np.random.normal(size=(h + i, h))
@@ -59,7 +63,8 @@ class GRUCell:
         """
 
         """
-        perform the computation of the update gate (z_gate) and reset gate (r_gate) for the GRU cell.
+        perform the computation of the update gate (z_gate) and
+        reset gate (r_gate) for the GRU cell.
         """
         # concatenating the previous hidden state and hidden input
         concatenation1 = np.concatenate((h_prev, x_t), axis=1)
