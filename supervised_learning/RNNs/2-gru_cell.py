@@ -39,7 +39,6 @@ class GRUCell:
         self.Wh = np.random.normal(size=(h + i, h))
         self.Wy = np.random.normal(size=(h, o))
 
-
     def softmax(self, x):
         """
         Performs the softmax function
@@ -78,7 +77,7 @@ class GRUCell:
         concatenation2 = np.concatenate((r_gate * h_prev, x_t), axis=1)
         h_next = np.tanh(np.matmul(concatenation2, self.Wh) + self.bh)
         # element-wise multiplication between the intermediate hidden state h_next 
-        # and the update gate z_gate; controls information (0, 1)
+        # and the update gate z_gate;
         h_next *= z_gate
         #  the complement of the update gate, how much info to discard
         h_next += (1 - z_gate) * h_prev
