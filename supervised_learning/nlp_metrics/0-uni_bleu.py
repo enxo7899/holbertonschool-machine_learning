@@ -25,13 +25,13 @@ def uni_bleu(references, sentence):
         references_length.append(len(translation))
         for word in translation:
             # if word is in sentence but not in dictionary
-            # to ensure counting each unique word in the proposed sentence 
+            # to ensure counting each unique word in the proposed sentence
             if word in sentence and word not in words.keys():
                 words[word] = 1
 
-    # total count of unique words present in both the reference 
+    # total count of unique words present in both the reference
     total = sum(words.values())
-    # index of the reference translation with the closest length to the 
+    # index of the reference translation with the closest length to the
     index = np.argmin([abs(len(i) - sentence_length) for i in references])
     # the length of the best matching reference translation
     best_match = len(references[index])
