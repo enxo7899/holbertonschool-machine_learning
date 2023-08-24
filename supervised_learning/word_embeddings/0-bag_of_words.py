@@ -8,10 +8,10 @@ import numpy as np
 from sklearn.feature_extraction.text import CountVectorizer
 
 
-"""Function bag_of_words"""
-
-
 def bag_of_words(sentences, vocab=None):
+    """
+    creates a bag of words embedding matrix
+    """
     if vocab is None:
         vectorizer = CountVectorizer()
     else:
