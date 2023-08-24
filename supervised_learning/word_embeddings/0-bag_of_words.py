@@ -2,6 +2,8 @@
 import numpy as np
 from sklearn.feature_extraction.text import CountVectorizer
 
+
+"""Function bag_of_words"""
 def bag_of_words(sentences, vocab=None):
     if vocab is None:
         vectorizer = CountVectorizer()
@@ -12,6 +14,7 @@ def bag_of_words(sentences, vocab=None):
     features = vectorizer.get_feature_names()
 
     return embeddings, features
+
 
 if __name__ == "__main__":
     sentences = ["Holberton school is Awesome!",
