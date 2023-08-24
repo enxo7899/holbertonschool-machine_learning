@@ -22,6 +22,7 @@ def tf_idf(sentences, vocab=None):
 
     return embeddings, features
 
+
 if __name__ == "__main__":
     sentences = ["Holberton school is Awesome!",
                  "Machine learning is awesome",
@@ -31,7 +32,8 @@ if __name__ == "__main__":
                  "The cake was not very good",
                  "No one said that the cake was not very good",
                  "Life is beautiful"]
-    vocab = ["awesome", "learning", "children", "cake", "good", "none", "machine"]
+    vocab = ["awesome", "learning", "children",
+             "cake", "good", "none", "machine"]
     E, F = tf_idf(sentences, vocab)
     print(E)
     print(F)
