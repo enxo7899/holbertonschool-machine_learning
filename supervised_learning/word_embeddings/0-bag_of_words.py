@@ -1,9 +1,12 @@
 #!/usr/bin/env python3
+"""bag of words"""
 import numpy as np
 from sklearn.feature_extraction.text import CountVectorizer
 
 
 """Function bag_of_words"""
+
+
 def bag_of_words(sentences, vocab=None):
     if vocab is None:
         vectorizer = CountVectorizer()
