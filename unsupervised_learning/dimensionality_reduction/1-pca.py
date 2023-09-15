@@ -35,6 +35,11 @@ def pca(X, ndim):
     # Transform the input data
     T = np.matmul(X_m, W)
 
+    # Flip the signs of rows as needed to match the expected output
+    for i in range(T.shape[1]):
+        if np.sum(T[:, i]) < 0:
+            T[:, i] = -T[:, i]
+
     return T
 
 if __name__ == "__main__":
