@@ -91,13 +91,15 @@ def precision(references, sentence, n):
 
     return precision
 
+
 """
-alculates the cumulative n-gram BLEU score by computing 
-the mean precision of n-grams across different sizes 
-and then combining this mean precision with a brevity penalty (BLEU). 
-This score provides a more comprehensive evaluation of the translation quality 
+alculates the cumulative n-gram BLEU score by computing
+the mean precision of n-grams across different sizes
+and then combining this mean precision with a brevity penalty (BLEU).
+This score provides a more comprehensive evaluation of the translation quality
 by considering multiple n-gram sizes and a length-based penalty
 """
+
 
 def cumulative_bleu(references, sentence, n):
     """
@@ -109,8 +111,8 @@ def cumulative_bleu(references, sentence, n):
     for i in range(n):
         precisions[i] = precision(references, sentence, i + 1)
 
-    # taking the logarithm of individual n-gram precisions, 
-    # averaging them, and then exponentiating the result to obtain the geometric mean
+    # taking the logarithm of individual n-gram precisions,
+    # averaging them, and then exponentiating the result to
     mean = np.exp(np.sum((1 / n) * np.log(precisions)))
 
     index = np.argmin([abs(len(word) - sentence_length) for
