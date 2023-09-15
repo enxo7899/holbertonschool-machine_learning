@@ -1,63 +1,45 @@
 #!/usr/bin/env python3
-"""
-Defines function that answers questions from reference text on loop
-"""
+import numpy as np
 
-
-import tensorflow as tf
-import tensorflow_hub as hub
-from transformers import BertTokenizer
-
-
-def answer_loop(reference):
+def pca(X, ndim):
     """
-    Answers questions from a reference text on loop
+    Perform PCA on a dataset.
+
+    Args:
+        X (numpy.ndarray): The input dataset with shape (n, d).
+        ndim (int): The new dimensionality of the transformed X.
+
+    Returns:
+        numpy.ndarray: The transformed data T with shape (n, ndim).
     """
-    while (1):
-        user_input = input("Q: ")
-        user_input = user_input.lower()
-        if user_input == 'exit' or user_input == 'quit' \
-           or user_input == 'goodbye' or user_input == 'bye':
-            print("A: Goodbye")
-            break
-        answer = question_answer(user_input, reference)
-        if answer is None:
-            print("A: Sorry, I do not understand your question.")
-        else:
-            print("A: ", answer)
+    # Calculate the mean of the input data
+    mean = np.mean(X, axis=0)
+    
+    # Subtract the mean from the data
+    X_m = X - mean
+    
+    # Calculate the covariance matrix
+    cov_matrix = np.cov(X_m, rowvar=False)
 
+    # Perform eigenvalue decomposition
+    eigenvalues, eigenvectors = np.linalg.eig(cov_matrix)
 
-def question_answer(question, reference):
-    """
-    Finds a snippet of text within a reference document to answer a question
-    """
-    tokenizer = BertTokenizer.from_pretrained(
-        'bert-large-uncased-whole-word-masking-finetuned-squad')
-    model = hub.load("https://tfhub.dev/see--/bert-uncased-tf2-qa/1")
+    # Sort eigenvalues and eigenvectors in descending order
+    sorted_indices = np.argsort(eigenvalues)[::-1]
+    eigenvalues = eigenvalues[sorted_indices]
+    eigenvectors = eigenvectors[:, sorted_indices]
 
-    quest_tokens = tokenizer.tokenize(question)
-    refer_tokens = tokenizer.tokenize(reference)
+    # Select the top ndim eigenvectors as the transformation matrix
+    W = eigenvectors[:, :ndim]
 
-    tokens = ['[CLS]'] + quest_tokens + ['[SEP]'] + refer_tokens + ['[SEP]']
+    # Transform the input data
+    T = np.matmul(X_m, W)
 
-    input_word_ids = tokenizer.convert_tokens_to_ids(tokens)
-    input_mask = [1] * len(input_word_ids)
-    input_type_ids = [0] * (
-        1 + len(quest_tokens) + 1) + [1] * (len(refer_tokens) + 1)
+    return T
 
-    input_word_ids, input_mask, input_type_ids = map(
-        lambda t: tf.expand_dims(
-            tf.convert_to_tensor(t, dtype=tf.int32), 0),
-        (input_word_ids, input_mask, input_type_ids))
-
-    outputs = model([input_word_ids, input_mask, input_type_ids])
-
-    short_start = tf.argmax(outputs[0][0][1:]) + 1
-    short_end = tf.argmax(outputs[1][0][1:]) + 1
-    answer_tokens = tokens[short_start: short_end + 1]
-    answer = tokenizer.convert_tokens_to_string(answer_tokens)
-
-    if answer == None or answer == "" or question in answer:
-        return None
-
-    return answer
+if __name__ == "__main__":
+    X = np.loadtxt("mnist2500_X.txt")
+    print('X:', X.shape)
+    T = pca(X, 50)
+    print('T:', T.shape)
+    print(T)
