@@ -2,6 +2,7 @@
 """
 Defines function that calculates the n-gram BLEU score for a sentence
 """
+
 import numpy as np
 
 def ngram_bleu(references, sentence, n):
@@ -40,7 +41,15 @@ def ngram_bleu(references, sentence, n):
         brevity_penalty = np.exp(1 - closest_length / candidate_length)
 
     precisions = [clipped_precision(sentence, references, i) for i in range(1, n + 1)]
-    bleu = brevity_penalty * np.exp(np.mean(np.log(precisions)))
+    log_precisions = np.log(precisions)
+    
+    # Calculate modified precision (BP = 1)
+    if candidate_length >= closest_length:
+        modified_precision = np.exp(np.mean(log_precisions))
+    else:
+        modified_precision = np.exp(np.mean(log_precisions) + (1 - closest_length / candidate_length))
+
+    bleu = brevity_penalty * modified_precision
 
     return bleu
 
