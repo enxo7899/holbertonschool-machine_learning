@@ -42,8 +42,8 @@ def ngram_bleu(references, sentence, n):
 
     precisions = [clipped_precision(sentence, references, i) for i in range(1, n + 1)]
     log_precisions = np.log(precisions)
-    
-    # Calculate modified precision (BP = 1)
+
+    # Calculate modified precision with brevity penalty
     if candidate_length >= closest_length:
         modified_precision = np.exp(np.mean(log_precisions))
     else:
@@ -55,7 +55,7 @@ def ngram_bleu(references, sentence, n):
 
 if __name__ == "__main__":
     references = [["the", "cat", "is", "on", "the", "mat"], ["there", "is", "a", "cat", "on", "the", "mat"]]
-    sentence = ["there", "is", "a", "cat", "here"]
+    sentence = ["the", "cat", "is", "on", "the", "mat"]
     n = 2
 
     bleu_score = ngram_bleu(references, sentence, n)
