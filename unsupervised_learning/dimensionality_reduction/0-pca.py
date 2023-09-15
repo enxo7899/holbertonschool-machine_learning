@@ -1,58 +1,54 @@
 #!/usr/bin/env python3
-"""
-Defines function that finds a snippet of text within a reference document
-to answer a question
-"""
+import numpy as np
 
-
-import tensorflow as tf
-import tensorflow_hub as hub
-from transformers import BertTokenizer
-
-
-def question_answer(question, reference):
+def pca(X, var=0.95):
     """
-    Finds a snippet of text within a reference document to answer a question
+    Perform PCA on a dataset.
+
+    Args:
+        X (numpy.ndarray): The input dataset with shape (n, d).
+        var (float): The fraction of variance to maintain (default is 0.95).
+
+    Returns:
+        numpy.ndarray: The weights matrix W with shape (d, nd) where nd is
+                      the new dimensionality of the transformed X.
     """
-    tokenizer = BertTokenizer.from_pretrained(
-        'bert-large-uncased-whole-word-masking-finetuned-squad')
-    model = hub.load("https://tfhub.dev/see--/bert-uncased-tf2-qa/1")
+    # Calculate the covariance matrix
+    cov_matrix = np.cov(X, rowvar=False)
 
-    # tokenize question and reference
-    quest_tokens = tokenizer.tokenize(question)
-    refer_tokens = tokenizer.tokenize(reference)
+    # Perform eigenvalue decomposition
+    eigenvalues, eigenvectors = np.linalg.eig(cov_matrix)
 
-    # add special tokens to include "classification" and "separator"
-    tokens = ['[CLS]'] + quest_tokens + ['[SEP]'] + refer_tokens + ['[SEP]']
+    # Sort eigenvalues and eigenvectors in descending order
+    sorted_indices = np.argsort(eigenvalues)[::-1]
+    eigenvalues = eigenvalues[sorted_indices]
+    eigenvectors = eigenvectors[:, sorted_indices]
 
-    # convert tokens to ids
-    input_word_ids = tokenizer.convert_tokens_to_ids(tokens)
+    # Calculate the cumulative explained variance
+    explained_variance_ratio = np.cumsum(eigenvalues) / np.sum(eigenvalues)
 
-    # A list of 1 indicates the presence of a token
-    # used to differentiate between tokens and padding
-    input_mask = [1] * len(input_word_ids)
+    # Determine the number of dimensions to keep
+    nd = np.argmax(explained_variance_ratio >= var) + 1
 
-    # 0 for question segment, 1 for reference segments
-    input_type_ids = [0] * (1 + len(quest_tokens) + 1) + [1] * (len(refer_tokens) + 1)
+    # Select the top nd eigenvectors as the transformation matrix
+    W = eigenvectors[:, :nd]
 
-    # Convert the input data to TF tensors, with additional batch
-    # Used to provide the data to BERT model
-    input_word_ids, input_mask, input_type_ids = map(
-        lambda t: tf.expand_dims(
-            tf.convert_to_tensor(t, dtype=tf.int32), 0),
-        (input_word_ids, input_mask, input_type_ids))
+    return W
 
-    # call the bert model
-    outputs = model([input_word_ids, input_mask, input_type_ids])
+if __name__ == "__main__":
+    np.random.seed(0)
+    a = np.random.normal(size=50)
+    b = np.random.normal(size=50)
+    c = np.random.normal(size=50)
+    d = 2 * a
+    e = -5 * b
+    f = 10 * c
 
-    # find the positions of the start and end
-    # of predicted answer span in model outputs
-    short_start = tf.argmax(outputs[0][0][1:]) + 1
-    short_end = tf.argmax(outputs[1][0][1:]) + 1
-    answer_tokens = tokens[short_start: short_end + 1]
-    answer = tokenizer.convert_tokens_to_string(answer_tokens)
-
-    if answer == None or answer == "" or question in answer:
-        return None
-
-    return answer
+    X = np.array([a, b, c, d, e, f]).T
+    m = X.shape[0]
+    X_m = X - np.mean(X, axis=0)
+    W = pca(X_m)
+    T = np.matmul(X_m, W)
+    print(T)
+    X_t = np.matmul(T, W.T)
+    print(np.sum(np.square(X_m - X_t)) / m)
