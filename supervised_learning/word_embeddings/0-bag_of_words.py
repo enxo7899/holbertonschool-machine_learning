@@ -7,7 +7,6 @@ bag of words creates a bag of words embedding matrix
 import numpy as np
 from sklearn.feature_extraction.text import CountVectorizer
 
-
 def bag_of_words(sentences, vocab=None):
     """
     creates a bag of words embedding matrix
@@ -18,10 +17,9 @@ def bag_of_words(sentences, vocab=None):
         vectorizer = CountVectorizer(vocabulary=vocab)
 
     embeddings = vectorizer.fit_transform(sentences).toarray()
-    features = vectorizer.get_feature_names()
+    features = vectorizer.get_feature_names_out()  # Use get_feature_names_out()
 
     return embeddings, features
-
 
 if __name__ == "__main__":
     sentences = ["Holberton school is Awesome!",
