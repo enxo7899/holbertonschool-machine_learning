@@ -1,18 +1,27 @@
 #!/usr/bin/env python3
 
 import numpy as np
-from sklearn.feature_extraction.text import CountVectorizer
 
 def bag_of_words(sentences, vocab=None):
     if vocab is None:
-        vectorizer = CountVectorizer()
-    else:
-        vectorizer = CountVectorizer(vocabulary=vocab)
+        # Extract unique words from all sentences to build the vocabulary
+        all_words = ' '.join(sentences).split()
+        vocab = list(set(all_words))
+    
+    # Create a dictionary to map words to indices in the vocabulary
+    word_to_index = {word: index for index, word in enumerate(vocab)}
 
-    embeddings = vectorizer.fit_transform(sentences).toarray()
-    features = vectorizer.get_feature_names_out()
+    # Initialize the embeddings matrix with zeros
+    embeddings = np.zeros((len(sentences), len(vocab)), dtype=int)
 
-    return embeddings, features
+    # Fill in the embeddings matrix
+    for i, sentence in enumerate(sentences):
+        words = sentence.split()
+        for word in words:
+            if word in vocab:
+                embeddings[i][word_to_index[word]] += 1
+
+    return embeddings, vocab
 
 if __name__ == "__main__":
     sentences = ["Holberton school is Awesome!",
@@ -23,6 +32,16 @@ if __name__ == "__main__":
                  "The cake was not very good",
                  "No one said that the cake was not very good",
                  "Life is beautiful"]
+    
+    # Test with vocab=None (all words within sentences)
     E, F = bag_of_words(sentences)
+    print("Vocab is None:")
+    print(E)
+    print(F)
+    
+    # Test with a custom vocab
+    custom_vocab = ['awesome', 'future', 'cake', 'good', 'is', 'learning', 'beautiful']
+    E, F = bag_of_words(sentences, vocab=custom_vocab)
+    print("\nVocab is not None:")
     print(E)
     print(F)
