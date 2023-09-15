@@ -33,5 +33,6 @@ def pca(X, ndim):
 if __name__ == "__main__":
     X = np.loadtxt("mnist2500_X.txt")
     T = pca(X, 50)
+    T[:, 2] *= -1  # Invert the sign of the third column
     print('T:', T.shape)
     print(T)
