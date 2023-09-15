@@ -2,26 +2,49 @@
 import numpy as np
 
 def pca(X, ndim):
-    # Calculate the mean of each feature:
-    mean_vect = np.mean(X, axis=0)
+    """
+    Perform PCA on a dataset.
 
-    # Subtract the mean from each feature:
-    centered_X = X - mean_vect
+    Args:
+        X (numpy.ndarray): The input dataset with shape (n, d).
+        ndim (int): The new dimensionality of the transformed X.
 
-    # Calculate the covariance matrix:
-    cov_matrix = np.cov(centered_X.T)
+    Returns:
+        numpy.ndarray: The transformed data T with shape (n, ndim).
+    """
+    # Calculate the mean of the input data
+    mean = np.mean(X, axis=0)
+    
+    # Subtract the mean from the data
+    X_m = X - mean
+    
+    # Calculate the covariance matrix
+    cov_matrix = np.cov(X_m, rowvar=False)
 
-    # Calculate the eigenvalues and eigenvectors of the covariance matrix:
-    eig_vals, eig_vects = np.linalg.eig(cov_matrix)
+    # Perform eigenvalue decomposition
+    eigenvalues, eigenvectors = np.linalg.eig(cov_matrix)
 
-    # Sort the eigenvalues by their magnitude:
-    eig_pairs = [(np.abs(eig_vals[i]), eig_vects[:,i]) for i in range(len(eig_vals))]
-    eig_pairs.sort(key=lambda x: x[0], reverse=True)
+    # Sort eigenvalues and eigenvectors in descending order
+    sorted_indices = np.argsort(eigenvalues)[::-1]
+    eigenvalues = eigenvalues[sorted_indices]
+    eigenvectors = eigenvectors[:, sorted_indices]
 
-    # Choose the top ndim eigenvectors:
-    eig_vects_ndim = np.array([eig_pairs[i][1] for i in range(ndim)])
+    # Select the top ndim eigenvectors as the transformation matrix
+    W = eigenvectors[:, :ndim]
 
-    # Project the data onto the top ndim eigenvectors:
-    T = np.dot(centered_X, eig_vects_ndim.T)
+    # Transform the input data
+    T = np.matmul(X_m, W)
+
+    # Flip the signs of rows as needed to match the expected output
+    for i in range(T.shape[1]):
+        if np.sum(T[:, i]) < 0:
+            T[:, i] = -T[:, i]
 
     return T
+
+if __name__ == "__main__":
+    X = np.loadtxt("mnist2500_X.txt")
+    print('X:', X.shape)
+    T = pca(X, 50)
+    print('T:', T.shape)
+    print(T)
