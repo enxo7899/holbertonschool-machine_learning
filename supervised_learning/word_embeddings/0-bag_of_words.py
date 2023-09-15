@@ -3,6 +3,20 @@
 import numpy as np
 
 def bag_of_words(sentences, vocab=None):
+    """
+    Create a bag of words embedding matrix.
+
+    Args:
+        sentences (list): List of sentences to analyze.
+        vocab (list, optional): List of vocabulary words to use for the analysis.
+            If None, all words within sentences should be used.
+
+    Returns:
+        tuple: A tuple containing:
+            - embeddings (numpy.ndarray): Embedding matrix of shape (s, f), where s
+              is the number of sentences and f is the number of features (words) analyzed.
+            - features (list): List of the features used for embeddings.
+    """
     if vocab is None:
         # Extract unique words from all sentences to build the vocabulary
         all_words = ' '.join(sentences).split()
