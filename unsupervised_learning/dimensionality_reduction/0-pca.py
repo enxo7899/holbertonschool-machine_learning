@@ -10,8 +10,9 @@ def pca(X, var=0.95):
         var (float): The fraction of variance to maintain (default is 0.95).
 
     Returns:
-        numpy.ndarray: The weights matrix W with shape (d, nd) where nd is
+        numpy.ndarray: The transformed data T with shape (n, nd) where nd is
                       the new dimensionality of the transformed X.
+        numpy.ndarray: The weights matrix W with shape (d, nd).
     """
     # Calculate the covariance matrix
     cov_matrix = np.cov(X, rowvar=False)
@@ -33,7 +34,10 @@ def pca(X, var=0.95):
     # Select the top nd eigenvectors as the transformation matrix
     W = eigenvectors[:, :nd]
 
-    return W
+    # Transform the input data
+    T = np.matmul(X, W)
+
+    return T, W
 
 if __name__ == "__main__":
     np.random.seed(0)
@@ -47,8 +51,8 @@ if __name__ == "__main__":
     X = np.array([a, b, c, d, e, f]).T
     m = X.shape[0]
     X_m = X - np.mean(X, axis=0)
-    W = pca(X_m)
-    T = np.matmul(X_m, W)
+    T, W = pca(X_m)
     print(T)
-    X_t = np.matmul(T, W.T)
-    print(np.sum(np.square(X_m - X_t)) / m)
+    print(T.shape)
+    print(W)
+    print(W.shape)
