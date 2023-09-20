@@ -19,13 +19,9 @@ def kmeans(X, k, iterations=1000):
         clss = np.argmin(distances, axis=1)
 
         # Update cluster centroids
-        new_C = np.empty_like(C)
-        for i in range(k):
-            if np.sum(clss == i) > 0:
-                new_C[i] = np.mean(X[clss == i], axis=0)
-            else:
-                # If a cluster has no data points, reinitialize its centroid
-                new_C[i] = np.random.uniform(low=min_vals, high=max_vals, size=d)
+        new_C = np.array([X[clss == i].mean(axis=0) if np.sum(clss == i) > 0 else
+                          np.random.uniform(low=min_vals, high=max_vals, size=d)
+                          for i in range(k)])
 
         # Check for convergence
         if np.all(C == new_C):
