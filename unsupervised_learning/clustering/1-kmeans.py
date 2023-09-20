@@ -1,6 +1,3 @@
-#!/usr/bin/env python3
-"""K means"""
-
 import numpy as np
 
 def kmeans(X, k, iterations=1000):
@@ -18,7 +15,7 @@ def kmeans(X, k, iterations=1000):
         # Assign each data point to the nearest cluster
         clss = np.argmin(distances, axis=1)
 
-        # Update cluster centroids
+        # Calculate new cluster centroids efficiently
         new_C = np.array([X[clss == i].mean(axis=0) if np.sum(clss == i) > 0 else
                           np.random.uniform(low=min_vals, high=max_vals, size=d)
                           for i in range(k)])
