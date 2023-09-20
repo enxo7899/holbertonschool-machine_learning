@@ -1,3 +1,7 @@
+#!/usr/bin/env python3
+"""K means"""
+
+
 import numpy as np
 
 def kmeans(X, k, iterations=1000):
