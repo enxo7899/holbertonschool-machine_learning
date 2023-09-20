@@ -18,10 +18,10 @@ def variance(X, C):
     n, d = X.shape
 
     """
-    In K-means clustering, the primary objective is to 
-    minimize the intra-cluster variance, 
-    which represents how much the data points 
-    within each cluster differ from their cluster centroid. 
+    In K-means clustering, the primary objective is to
+    minimize the intra-cluster variance,
+    which represents how much the data points
+    within each cluster differ from their cluster centroid.
     """
     # distances also know as euclidean distance
     centroids_extended = C[:, np.newaxis]
