@@ -6,6 +6,7 @@ Backwards Task
 
 import numpy as np
 
+
 def backward(Observation, Emission, Transition, Initial):
     """
     Perform the backward algorithm for a Hidden Markov Model.
@@ -31,11 +32,13 @@ def backward(Observation, Emission, Transition, Initial):
 
     for t in range(T - 2, -1, -1):
         for s in range(N):
-            B[s, t] = np.sum(B[:, t + 1] * Transition[s, :] * Emission[:, Observation[t + 1]])
+            B[s, t] = np.sum(B[:, t + 1] * Transition[s, :] * 
+                Emission[:, Observation[t + 1]])
 
     P = np.sum(Initial[:, 0] * Emission[:, Observation[0]] * B[:, 0])
 
     return P, B
+
 
 # Example usage
 if __name__ == '__main__':
@@ -59,6 +62,7 @@ if __name__ == '__main__':
     for s in Hidden:
         Observations.append(np.random.choice(6, p=Emission[s]))
     Observations = np.array(Observations)
-    P, B = backward(Observations, Emission, Transition, Initial.reshape((-1, 1)))
+    P, B = backward(Observations, Emission, Transition,
+                Initial.reshape((-1, 1)))
     print(P)
     print(B)
