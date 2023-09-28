@@ -33,7 +33,7 @@ def backward(Observation, Emission, Transition, Initial):
     for t in range(T - 2, -1, -1):
         for s in range(N):
             B[s, t] = np.sum(B[:, t + 1] * Transition[s, :] *
-                            Emission[:, Observation[t + 1]])
+                                Emission[:, Observation[t + 1]])
 
     P = np.sum(Initial[:, 0] * Emission[:, Observation[0]] * B[:, 0])
 
