@@ -1,4 +1,9 @@
 #!/usr/bin/env python3
+"""
+Module: 4-viterbi
+This module contains the implementation
+for Hidden Markov Models.
+"""
 
 
 import numpy as np
