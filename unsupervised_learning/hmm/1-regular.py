@@ -6,7 +6,7 @@ import numpy as np
 
 def regular(P):
     """
-    Function that determines the steady state probabilities of a regular markov chain
+    Function that determines the steady state regular markov chain
     """
     try:
         if len(P.shape) != 2:
@@ -23,7 +23,7 @@ def regular(P):
         evals, evecs = np.linalg.eig(P.T)
         """
          break down a matrix into its constituent parts
-         where the eigenvectors represent the directions in which the matrix scales
+         where the eigenvectors represent the matrix scales
          and the eigenvalues represent the scaling factors
         """
 
@@ -33,7 +33,7 @@ def regular(P):
         # P.T π.T = π.T (.)
         new_state = np.dot(state.T, P)
 
-        # each element of the normalized state vector is greater than or equal to 0
+        # each element of the normalized state vector is greater
         # and if the sum of elements in the vector is close to 1.
         for i in new_state:
             if (i >= 0).all() and np.isclose(i.sum(), 1):
