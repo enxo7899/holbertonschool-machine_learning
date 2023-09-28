@@ -15,9 +15,10 @@ def absorbing(P):
     if (n1 != n2) or type(P) is not np.ndarray:
         return None
 
+    
     D = np.diagonal(P) # transition probabilities from each state to itself
 
-    
+
     # extreme cases where either all states are absorbing or none of them are
     if (D == 1).all():
         return True
@@ -32,8 +33,8 @@ def absorbing(P):
 
     """
     For each diagonal element (where i == j)
-    check the transition probabilities of the next state  and the previous state
-    If both of these probabilities are zero, it implies that the current state
+    check the transition probabilities of the next state  and the previous
+    If both of these probabilities are zero, it implies that the current
     as there are transitions out of it
     """
     for i in range(n1):
