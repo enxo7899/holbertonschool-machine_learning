@@ -11,14 +11,14 @@ def backward(Observation, Emission, Transition, Initial):
     Perform the backward algorithm for a Hidden Markov Model.
 
     Args:
-        Observation (numpy.ndarray): An array of shape (T,) containing the indices of observations.
-        Emission (numpy.ndarray): An array of shape (N, M) containing the emission probabilities.
-        Transition (numpy.ndarray): An array of shape (N, N) containing the transition probabilities.
-        Initial (numpy.ndarray): An array of shape (N, 1) containing the initial probabilities.
+        Observation (numpy.ndarray): An array of shape (T,)
+        Emission (numpy.ndarray): An array of shape (N, M)
+        Transition (numpy.ndarray): An array of shape (N, N)
+        Initial (numpy.ndarray): An array of shape (N, 1)
 
     Returns:
-        tuple: A tuple containing the likelihood of the observations given the model (float)
-        and the backward path probabilities (numpy.ndarray) of shape (N, T).
+        tuple: A tuple containing the likelihood of t
+        and the backward path probabilities (numpy.nd
     """
     T = len(Observation)
     N, M = Emission.shape
