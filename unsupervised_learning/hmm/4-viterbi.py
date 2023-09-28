@@ -82,10 +82,10 @@ if __name__ == '__main__':
         Observations.append(np.random.choice(6, p=Emission[s]))
     Observations = np.array(Observations)
     path, P = viterbi(
-    Observations,
-    Emission,
-    Transition,
-    Initial.reshape((-1, 1))
-)
+        Observations,
+        Emission,
+        Transition,
+        Initial.reshape((-1, 1))
+    )
     print("Probability of the most likely path:", P)
     print("Most likely path:", path)
