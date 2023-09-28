@@ -17,6 +17,7 @@ def absorbing(P):
 
     D = np.diagonal(P) # transition probabilities from each state to itself
 
+    
     # extreme cases where either all states are absorbing or none of them are
     if (D == 1).all():
         return True
@@ -26,14 +27,13 @@ def absorbing(P):
     # formula t=(I-Q)^-1 1
     # approach using Neumman series: t = (∑ inf k=0 * Q^k) * 1
     # suggested implementation based on: https://stackoverflow.com/
-    # questions/45164505/best-iterative-way-to-calculate-the-fundamental-matrix-
+    # questions/45164505/best-iterative-way-to-calculate-the-fundam
     # of-an-absorbing-markov-ch
-
 
     """
     For each diagonal element (where i == j)
     check the transition probabilities of the next state  and the previous state
-    If both of these probabilities are zero, it implies that the current state is not absorbing
+    If both of these probabilities are zero, it implies that the current state
     as there are transitions out of it
     """
     for i in range(n1):
