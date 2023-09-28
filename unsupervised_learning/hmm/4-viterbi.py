@@ -59,6 +59,7 @@ def viterbi(Observation, Emission, Transition, Initial):
 
     return path, P
 
+
 if __name__ == '__main__':
     np.random.seed(1)
     Emission = np.array([[0.90, 0.10, 0.00, 0.00, 0.00, 0.00],
@@ -80,6 +81,11 @@ if __name__ == '__main__':
     for s in Hidden:
         Observations.append(np.random.choice(6, p=Emission[s]))
     Observations = np.array(Observations)
-    path, P = viterbi(Observations, Emission, Transition, Initial.reshape((-1, 1)))
+    path, P = viterbi(
+    Observations,
+    Emission,
+    Transition,
+    Initial.reshape((-1, 1))
+)
     print("Probability of the most likely path:", P)
     print("Most likely path:", path)
