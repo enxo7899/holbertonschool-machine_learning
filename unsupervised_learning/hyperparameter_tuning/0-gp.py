@@ -20,6 +20,9 @@ class GaussianProcess:
 
     
     def kernel(self, X1, X2):
+        """
+        Function Kernel
+        """
         m, n = X1.shape[0], X2.shape[0]
         K = np.zeros((m, n))
 
