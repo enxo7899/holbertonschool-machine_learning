@@ -3,6 +3,7 @@
 
 import numpy as np
 
+
 def viterbi(Observation, Emission, Transition, Initial):
     T = len(Observation)
     N, M = Emission.shape
@@ -27,7 +28,8 @@ def viterbi(Observation, Emission, Transition, Initial):
             max_score = -1
             best_state = -1
             for s_prev in range(N):
-                score = Viterbi[s_prev, t - 1] * Transition[s_prev, s] * Emission[s, Observation[t]]
+                score = [Viterbi[s_prev, t - 1] * Transition[s_prev, s]
+                         * Emission[s, Observation[t]]]
                 if score > max_score:
                     max_score = score
                     best_state = s_prev
