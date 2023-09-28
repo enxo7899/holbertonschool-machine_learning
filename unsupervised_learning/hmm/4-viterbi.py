@@ -5,31 +5,38 @@ import numpy as np
 
 
 def viterbi(Observation, Emission, Transition, Initial):
+    """
+    Calculate the most likely sequence of hidden states for
+    a Hidden Markov Model using the Viterbi algorithm.
+
+    Args:
+        Observation (numpy.ndarray): An array of shape (T,)
+        Emission (numpy.ndarray): An array of shape (N, M)
+        Transition (numpy.ndarray): An array of shape (N, N)
+        Initial (numpy.ndarray): An array of shape (N, 1)
+
+    Returns:
+        tuple: A tuple containing the most likely sequence of
+        hidden states (list) and its probability (float).
+    """
     T = len(Observation)
     N, M = Emission.shape
 
     if T == 0 or N == 0:
         return None, None
 
-    # Initialize the Viterbi matrix and the backpointer matrix
     Viterbi = np.zeros((N, T))
     backpointer = np.zeros((N, T), dtype=int)
 
-    # Initialize the first column of the Viterbi matrix
     Viterbi[:, 0] = Initial.reshape(-1) * Emission[:, Observation[0]]
-
-    # Initialize the backpointer for the first column
     backpointer[:, 0] = -1
 
-    # Fill in the Viterbi and backpointer matrices
     for t in range(1, T):
         for s in range(N):
-            # Calculate the maximum Viterbi score and backpointer
             max_score = -1
             best_state = -1
             for s_prev in range(N):
-                score = [Viterbi[s_prev, t - 1] * Transition[s_prev, s]
-                         * Emission[s, Observation[t]]]
+                score = Viterbi[s_prev, t - 1] * Transition[s_prev, s] * Emission[s, Observation[t]]
                 if score > max_score:
                     max_score = score
                     best_state = s_prev
@@ -37,7 +44,6 @@ def viterbi(Observation, Emission, Transition, Initial):
             Viterbi[s, t] = max_score
             backpointer[s, t] = best_state
 
-    # Reconstruct the most likely path
     path = []
     max_prob_state = np.argmax(Viterbi[:, -1])
     path.append(max_prob_state)
@@ -47,12 +53,10 @@ def viterbi(Observation, Emission, Transition, Initial):
 
     path.reverse()
 
-    # Calculate the probability of the most likely path
     P = np.max(Viterbi[:, -1])
 
     return path, P
 
-# Example usage
 if __name__ == '__main__':
     np.random.seed(1)
     Emission = np.array([[0.90, 0.10, 0.00, 0.00, 0.00, 0.00],
@@ -75,5 +79,5 @@ if __name__ == '__main__':
         Observations.append(np.random.choice(6, p=Emission[s]))
     Observations = np.array(Observations)
     path, P = viterbi(Observations, Emission, Transition, Initial.reshape((-1, 1)))
-    print(P)
-    print(path)
+    print("Probability of the most likely path:", P)
+    print("Most likely path:", path)
