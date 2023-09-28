@@ -18,7 +18,6 @@ class GaussianProcess:
         self.sigma_f = sigma_f
         self.K = self.kernel(X_init, X_init)
 
-    
     def kernel(self, X1, X2):
         """
         Function Kernel
@@ -32,6 +31,7 @@ class GaussianProcess:
                 K[i][j] = self.sigma_f ** 2 * np.exp(-0.5 * (dist / self.l) ** 2)
 
         return K
+
 
 if __name__ == '__main__':
     np.random.seed(0)
