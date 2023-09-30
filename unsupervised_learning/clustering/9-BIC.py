@@ -1,54 +1,58 @@
 #!/usr/bin/env python3
-""" Bayesian Information Criterion """
-
+"""
+9-BIC.py
+"""
 import numpy as np
+expectation_maximization = __import__('8-EM').expectation_maximization
+
 
 def BIC(X, kmin=1, kmax=None, iterations=1000, tol=1e-5, verbose=False):
     """
-    BIC function
+    function that finds the best number of clusters for a GMM using
+    the Bayesian Information Criterion
     """
-    if not isinstance(X, np.ndarray) or len(X.shape) != 2:
+
+    if not isinstance(X, np.ndarray) or X.ndim != 2:
         return None, None, None, None
-    if type(kmin) != int or kmin <= 0 or kmin >= X.shape[0]:
+    if not isinstance(kmin, int) or kmin <= 0 or X.shape[0] <= kmin:
         return None, None, None, None
-    if type(kmax) != int or kmax <= 0 or kmax >= X.shape[0]:
+    if not isinstance(kmax, int) or kmax <= 0 or X.shape[0] <= kmax:
         return None, None, None, None
-    if kmin >= kmax:
+    if not isinstance(iterations, int) or iterations <= 0:
         return None, None, None, None
-    if type(iterations) != int or iterations <= 0:
+    if not isinstance(tol, float) or tol < 0:
         return None, None, None, None
-    if type(tol) != float or tol <= 0:
-        return None, None, None, None
-    if type(verbose) != bool:
+    if not isinstance(verbose, bool):
         return None, None, None, None
 
-    k_best = []
-    best_res = []
-    logl_val = []
-    bic_val = []
+    # X: array of shape (n, d) containing the data set
     n, d = X.shape
+
+    # Define pi_t, m_t, S_t: arrays containing the relevant
+    # parameters for all the clusters
+    all_pis = []
+    all_ms = []
+    all_Ss = []
+    all_lkhds = []
+    all_bs = []
+
+    # Iterate over the ((kmax + 1) - kmin) clusters
     for k in range(kmin, kmax + 1):
-        pi, m, S,  _, log_l = expectation_maximization(X, k, iterations, tol,
-                                                       verbose)
-        k_best.append(k)
-        best_res.append((pi, m, S))
-        logl_val.append(log_l)
+        pi, m, S, g, lkhd = expectation_maximization(X, k, iterations,
+                                                     tol, verbose)
+        all_pis.append(pi)
+        all_ms.append(m)
+        all_Ss.append(S)
+        all_lkhds.append(lkhd)
+        # p: the number of parameters required for the model
+        p = (k * d * (d + 1) / 2) + (d * k) + (k - 1)
+        # b: array containing the BIC value for each cluster size tested
+        b = p * np.log(n) - 2 * lkhd
+        all_bs.append(b)
 
-        # Formula pf paramaters: https://bit.ly/33Cw8lH
-        # code based on gaussian mixture source code n_parameters source code
-        cov_params = k * d * (d + 1) / 2.
-        mean_params = k * d
-        p = int(cov_params + mean_params + k - 1)
+    all_lkhds = np.array(all_lkhds)
+    all_bs = np.array(all_bs)
+    best_k = np.argmin(all_bs)
+    best_result = (all_pis[best_k], all_ms[best_k], all_Ss[best_k])
 
-        # Formula for this task BIC = p * ln(n) - 2 * l
-        bic = p * np.log(n) - 2 * log_l
-        bic_val.append(bic)
-
-    bic_val = np.array(bic_val)
-    logl_val = np.array(logl_val)
-    best_val = np.argmin(bic_val)
-
-    k_best = k_best[best_val]
-    best_res = best_res[best_val]
-
-    return k_best, best_res, logl_val, bic_val
+    return best_k+1, best_result, all_lkhds, all_bs
