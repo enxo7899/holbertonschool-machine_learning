@@ -1,17 +1,23 @@
 #!/usr/bin/env python3
-"""Perform optimization"""
-
-
+"""
+Updates a variable using the Adam optimization algorithm with tensorflow
+"""
 import tensorflow as tf
 
 
 def create_Adam_op(loss, alpha, beta1, beta2, epsilon):
     """
-    adam op
+    a function that optimizes using Adam with tensorflow
+    :param alpha: the learning rate
+    :param beta1: the weight used for the first moment
+    :param beta2: the weight used for the second moment
+    :param epsilon: small number to avoid division by zero
+    :param var: numpy.ndarray containing the variable to be updated
+    :param grad: numpy.ndarray containing the gradient of var
+    :param v: the previous first moment of var
+    :param s: the previous second moment of var
+    :param t: the time step used for bias correction
+    :return: the updated variable, the new first moment, and the new second
+    moment, respectively
     """
-    optimizer = tf.keras.optimizers.Adam(
-        learning_rate=alpha, 
-        beta_1=beta1, 
-        beta_2=beta2, 
-        epsilon=epsilon)
-    return optimizer.minimize(loss)
+    return tf.train.AdamOptimizer(alpha, beta1, beta2, epsilon).minimize(loss)
