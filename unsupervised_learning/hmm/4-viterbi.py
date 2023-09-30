@@ -1,96 +1,88 @@
 #!/usr/bin/env python3
 """
-Module: 4-viterbi
-This module contains the implementation
-for Hidden Markov Models.
+4-viterbi.py
 """
-
-
 import numpy as np
 
 
 def viterbi(Observation, Emission, Transition, Initial):
-    """
-    Calculate the most likely sequence of hidden states for
-    a Hidden Markov Model using the Viterbi algorithm.
+    """function that that calculates the most likely sequence of hidden states
+    for a hidden markov model"""
 
-    Args:
-        Observation (numpy.ndarray): An array of shape (T,)
-        Emission (numpy.ndarray): An array of shape (N, M)
-        Transition (numpy.ndarray): An array of shape (N, N)
-        Initial (numpy.ndarray): An array of shape (N, 1)
-
-    Returns:
-        tuple: A tuple containing the most likely sequence of
-        hidden states (list) and its probability (float).
-    """
-    T = len(Observation)
-    N, M = Emission.shape
-
-    if T == 0 or N == 0:
+    # Initial: shape (N, 1), N: number of hidden states
+    if not isinstance(Initial, np.ndarray) or Initial.ndim != 2:
+        return None, None
+    if Initial.shape[1] != 1:
+        return None, None
+    if not np.isclose(np.sum(Initial, axis=0), [1])[0]:
+        return None, None
+    # Transition: shape (N, N)
+    if not isinstance(Transition, np.ndarray) or Transition.ndim != 2:
+        return None, None
+    if Transition.shape[0] != Initial.shape[0]:
+        return None, None
+    if Transition.shape[1] != Initial.shape[0]:
+        return None, None
+    if not np.isclose(np.sum(Transition, axis=1),
+                      np.ones(Initial.shape[0])).all():
+        return None, None
+    # Observation: shape (T,), T: number of observations
+    if not isinstance(Observation, np.ndarray) or Observation.ndim != 1:
+        return None, None
+    # Emission: shape (N, M), M: number of all possible observations
+    if not isinstance(Emission, np.ndarray) or Emission.ndim != 2:
+        return None, None
+    if not np.sum(Emission, axis=1).all():
+        return None, None
+    if not np.isclose(np.sum(Emission, axis=1),
+                      np.ones(Emission.shape[0])).all():
         return None, None
 
-    Viterbi = np.zeros((N, T))
-    backpointer = np.zeros((N, T), dtype=int)
+    # N: Number of hidden states
+    N = Initial.shape[0]
+    # print("N:", N)
+    # T: Number of observations
+    T = Observation.shape[0]
+    # print("T:", T)
 
-    Viterbi[:, 0] = Initial.reshape(-1) * Emission[:, Observation[0]]
-    backpointer[:, 0] = -1
+    # Initialize an array V (equivalent to alpha): shape (N, T)
+    # V1(z1) = alpha1(z1) = p(z1,x1) = p(z1)p(x1/z1)
+    # p(z1): Initial
+    # p(x1/z1): Extract from Emission probability matrix
+    V = np.zeros((N, T))
+    V[:, 0] = Initial.T * Emission[:, Observation[0]]
+    # print("V[:, 0]:", V[:, 0], V[:, 0].shape)
 
-    for t in range(1, T):
-        for s in range(N):
-            max_score = -1
-            best_state = -1
-            for s_prev in range(N):
-                score = Viterbi[s_prev, t - 1] \
-                        * Transition[s_prev, s] \
-                        * Emission[s, Observation[t]]
-                if score > max_score:
-                    max_score = score
-                    best_state = s_prev
+    # Initialize an array B, keeping track of the possible state sequences
+    B = np.zeros((N, T))
 
-            Viterbi[s, t] = max_score
-            backpointer[s, t] = best_state
-
-    path = []
-    max_prob_state = np.argmax(Viterbi[:, -1])
-    path.append(max_prob_state)
-    for t in range(T - 1, 0, -1):
-        max_prob_state = backpointer[max_prob_state, t]
-        path.append(max_prob_state)
-
-    path.reverse()
-
-    P = np.max(Viterbi[:, -1])
+    for j in range(1, T):
+        for i in range(N):
+            # Apply the Forward algorithm to compose V (recursive/dynamic)
+            # Compute Vk(zk) = alphak(zk) =
+            # sum(over zk-1=1,...N)(p(xk/zk)p(zk/zk-1)Vk-1(zk-1)) for k=2,...T
+            # V[i, j]: probability of being in hidden state i at time j
+            # given the previous observations
+            temp = Emission[i, Observation[j]] * Transition[:, i] * V[:, j - 1]
+            # print("temp:", temp)
+            V[i, j] = np.max(temp, axis=0)
+            # print("V at {}:".format(i), V)
+            B[i, j] = np.argmax(temp, axis=0)
+            # print("B at {}:".format(i), B)
+    # Extract the forward path probabilities for the last observation
+    # and from this column vector, extract the max value <- max probability
+    # -> infer the most likely path sequence; P: corresponding probability
+    P = np.max(V[:, T - 1])
+    # Infer the index of the corresponding state (last hidden state)
+    # (most likely hidden state at T - 1)
+    S = np.argmax(V[:, T - 1])
+    # Add S to a "path" array
+    path = [S]
+    # Iterate over the remaining time steps, and then reverse path
+    for j in range(T - 1, 0, -1):
+        S = int(B[S, j])
+        path.append(S)
+    path = path[:: -1]
+    # print("path:", len(path))
 
     return path, P
-
-
-if __name__ == '__main__':
-    np.random.seed(1)
-    Emission = np.array([[0.90, 0.10, 0.00, 0.00, 0.00, 0.00],
-                         [0.40, 0.50, 0.10, 0.00, 0.00, 0.00],
-                         [0.00, 0.25, 0.50, 0.25, 0.00, 0.00],
-                         [0.00, 0.00, 0.05, 0.70, 0.15, 0.10],
-                         [0.00, 0.00, 0.00, 0.20, 0.50, 0.30]])
-    Transition = np.array([[0.60, 0.39, 0.01, 0.00, 0.00],
-                           [0.20, 0.50, 0.30, 0.00, 0.00],
-                           [0.01, 0.24, 0.50, 0.24, 0.01],
-                           [0.00, 0.00, 0.15, 0.70, 0.15],
-                           [0.00, 0.00, 0.01, 0.39, 0.60]])
-    Initial = np.array([0.05, 0.20, 0.50, 0.20, 0.05])
-    Hidden = [np.random.choice(5, p=Initial)]
-    for _ in range(364):
-        Hidden.append(np.random.choice(5, p=Transition[Hidden[-1]]))
-    Hidden = np.array(Hidden)
-    Observations = []
-    for s in Hidden:
-        Observations.append(np.random.choice(6, p=Emission[s]))
-    Observations = np.array(Observations)
-    path, P = viterbi(
-        Observations,
-        Emission,
-        Transition,
-        Initial.reshape((-1, 1))
-    )
-    print("Probability of the most likely path:", P)
-    print("Most likely path:", path)
