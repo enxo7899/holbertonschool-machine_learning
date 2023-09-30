@@ -1,62 +1,71 @@
 #!/usr/bin/env python3
 """
-Defines function that calculates the n-gram BLEU score for a sentence
+Calculates the unigram BLEU score for a sentence
 """
-
 import numpy as np
 
+
+def n_grams(sentence, n):
+    """
+    Creates the n-grams from sentence
+    :param sentence: a list containing the model proposed sentence
+    :param n: the size of the n-gram to use for evaluation
+    :return: the n-gram
+    """
+    list_grams_cand = []
+    for i in range(len(sentence)):
+        last = i + n
+        begin = i
+        if last >= len(sentence) + 1:
+            break
+        aux = sentence[begin: last]
+        result = ' '.join(aux)
+        list_grams_cand.append(result)
+    return list_grams_cand
+
+
 def ngram_bleu(references, sentence, n):
-    def ngrams(tokens, n):
-        ngrams_list = []
-        for i in range(len(tokens) - n + 1):
-            ngram = tuple(tokens[i:i + n])
-            ngrams_list.append(ngram)
-        return ngrams_list
+    """
+    Calculates the unigram BLEU score for a sentence
+    :param references: a list of reference translations
+    each reference translation is a list of the words in the translation
+    :param sentence: a list containing the model proposed sentence
+    :param n: the size of the n-gram to use for evaluation
+    :return: unigram BLEU score
+    """
+    grams = list(set(n_grams(sentence, n)))
+    len_g = len(grams)
+    reference_grams = []
+    words_dict = {}
 
-    def clipped_precision(candidate, references, n):
-        candidate_ngrams = ngrams(candidate, n)
-        max_clip = {}
-        for ngram in candidate_ngrams:
-            max_count = 0
-            for ref in references:
-                ref_ngrams = ngrams(ref, n)
-                count = ref_ngrams.count(ngram)
-                max_count = max(max_count, count)
-            max_clip[ngram] = max_count
-        clipped_count = sum(max_clip.values())
-        total_count = len(candidate_ngrams)
-        if total_count == 0:
-            return 0
-        precision = clipped_count / total_count
-        return precision
+    for reference in references:
+        list_grams = n_grams(reference, n)
+        reference_grams.append(list_grams)
 
-    reference_lengths = [len(ref) for ref in references]
-    candidate_length = len(sentence)
+    for ref in reference_grams:
+        for word in ref:
+            if word in grams:
+                if word not in words_dict.keys():
+                    words_dict[word] = ref.count(word)
+                else:
+                    actual = ref.count(word)
+                    prev = words_dict[word]
+                    words_dict[word] = max(actual, prev)
 
-    closest_length = min(reference_lengths, key=lambda ref_len: abs(ref_len - candidate_length))
+    candidate = len(sentence)
+    prob = sum(words_dict.values()) / len_g
 
-    if candidate_length > closest_length:
-        brevity_penalty = 1
+    best_match = []
+    for reference in references:
+        ref_len = len(reference)
+        diff = abs(ref_len - candidate)
+        best_match.append((diff, ref_len))
+
+    sort_tuple = sorted(best_match, key=(lambda x: x[0]))
+    best = sort_tuple[0][1]
+    if candidate > best:
+        bleu = 1
     else:
-        brevity_penalty = np.exp(1 - closest_length / candidate_length)
-
-    precisions = [clipped_precision(sentence, references, i) for i in range(1, n + 1)]
-    log_precisions = np.log(precisions)
-
-    # Calculate modified precision with brevity penalty
-    if candidate_length >= closest_length:
-        modified_precision = np.exp(np.mean(log_precisions))
-    else:
-        modified_precision = np.exp(np.mean(log_precisions) + (1 - closest_length / candidate_length))
-
-    bleu = brevity_penalty * modified_precision
-
-    return bleu
-
-if __name__ == "__main__":
-    references = [["the", "cat", "is", "on", "the", "mat"], ["there", "is", "a", "cat", "on", "the", "mat"]]
-    sentence = ["the", "cat", "is", "on", "the", "mat"]
-    n = 2
-
-    bleu_score = ngram_bleu(references, sentence, n)
-    print(bleu_score)
+        bleu = np.exp(1 - (best / candidate))
+    score = bleu * np.exp(np.log(prob))
+    return score
