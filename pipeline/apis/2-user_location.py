@@ -9,7 +9,7 @@ import requests
 from datetime import datetime, timedelta
 
 def get_user_location(api_url):
-    """Function to get the location of user"""
+    """Function to get the location of userf"""
     response = requests.get(api_url)
 
     if response.status_code == 404:
