@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import pymongo
 
 # Connect to the MongoDB server (assuming it's running locally)
