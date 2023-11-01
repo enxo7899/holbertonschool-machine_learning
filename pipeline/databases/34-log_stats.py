@@ -1,32 +1,23 @@
 #!/usr/bin/env python3
+"""
+This script provides some stats about Nginx logs stored in MongoDB
+"""
 
-import pymongo
+from pymongo import MongoClient
 
-# Connect to the MongoDB server (assuming it's running locally)
-client = pymongo.MongoClient("localhost", 27017)
+if __name__ == "__main__":
 
-# Access the 'logs' database
-db = client.logs
+    client = MongoClient('mongodb://127.0.0.1:27017')
+    collection_logs = client.logs.nginx
+    num_docs = collection_logs.count_documents({})
+    print("{} logs".format(num_docs))
+    print("Methods:")
+    methods = ["GET", "POST", "PUT", "PATCH", "DELETE"]
+    for method in methods:
+        num_met = collection_logs.count_documents({"method": method})
+        print("\tmethod {}: {}".format(method, num_met))
 
-# Access the 'nginx' collection
-collection = db.nginx
+    my_dicti = {"method": "GET", "path": "/status"}
 
-# Get the total number of documents in the collection
-total_logs = collection.count_documents({})
-
-# Get the count for each HTTP method
-methods = ["GET", "POST", "PUT", "PATCH", "DELETE"]
-method_counts = {method: collection.count_documents({"method": method}) for method in methods}
-
-# Get the count for the specific method and path
-status_check_count = collection.count_documents({"method": "GET", "path": "/status"})
-
-# Print the results
-print(f"{total_logs} logs")
-print("Methods:")
-for method in methods:
-    print(f"    method {method}: {method_counts[method]}")
-print(f"{status_check_count} status check")
-
-# Close the MongoDB connection
-client.close()
+    num_dicti = collection_logs.count_documents(my_dicti)
+    print("{} status check".format(num_dicti))
